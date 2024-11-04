@@ -32,20 +32,21 @@ X increases from top to bottom
 
 /********************** Fundamental game parameters ********************************/
 
-#define universe_size 60	/*  60   Universe sise, type int */
-#define us_f 60.0		/*  60.0 Float universe size, type float */
-#define srs_range 3		/*   3   Short Range Scan range, type int */
-#define screen_rows 25
-#define K_prob 45.0		/*  45.0 Klingon probability, type float */
-#define S_prob 2		/*   2   Space Station probability, type int */
-#define W_prob 1		/*   1   Worm Hole probability, type int */
-#define max_ran 800		/* 800   Max my_random numbers for K and S per max_ran, type int */
-#define max_no_dock 15		/*  15   Max. elapse time after dock before re-dock, type int */
-/* Also see */			/* Other fundamental game parameters approx. line 139 */
+#define UNIVERSE_SIZE 60			// 60   Universe sise, type int 
+//#define US_F 60.0		  			//  60.0 Float universe size, type float
+#define US_F (float) UNIVERSE_SIZE 	// 3   Short Range Scan range, type int
+#define SRS_RANGE 3					// 3   Short Range Scan range, type int 
+#define SCREEN_ROWS 25
+#define K_PROB 45.0					// 45.0 Klingon probability, type float 
+#define S_PROB 2					// 2   Space Station probability, type int 
+#define W_PROB 1					// 1   Worm Hole probability, type int
+#define MAX_RAN 800					// 800 Max my_random numbers for K and S per MAX_RAN, type int
+#define MAX_NO_DOCK 15				// 15   Max. elapse time after dock before re-dock, type int
+/* Also see */						// Other fundamental game parameters approx. line 139
 
 /********************* End Fundamental game parameters *****************************/
 
-char universe[universe_size][universe_size];
+char universe[UNIVERSE_SIZE][UNIVERSE_SIZE];
 int star_date = 1000;		/* Star date */
 int max_star_date;		/* Game end date */
 
@@ -64,9 +65,6 @@ int W_in_sector;		/* Worm Hole in current sector */
 int K_count[8];			/* Klingon count for LRS */
 int S_count[8];			/* Space Station count for LRS */
 int W_count[8];			/* Worm hole count for LRS */
-
-
-
 
 int shield = 0;			/* Shields fully charged at 99 */
 int phaser = 0;			/* Phasers fully charged at 50 */
@@ -143,7 +141,7 @@ int main()
 
 /**********************************************************************
 
-Create a universe of size (universe_size x universe_size).
+Create a universe of size (UNIVERSE_SIZE x UNIVERSE_SIZE).
 
 **********************************************************************/ 
 
@@ -152,18 +150,18 @@ Create a universe of size (universe_size x universe_size).
     // Seed the random number generator with the current time 
     srand(time(NULL)); 
 
-	for (ux = 0; ux <= (universe_size - 1); ++ux) {
-		for ( uy = 0; uy <= (universe_size - 1); ++uy ) {
+	for (ux = 0; ux <= (UNIVERSE_SIZE - 1); ++ux) {
+		for ( uy = 0; uy <= (UNIVERSE_SIZE - 1); ++uy ) {
 	
-			if (my_random(max_ran) < K_prob) {
+			if (my_random(MAX_RAN) < K_PROB) {
 				universe[ux][uy] = 'K';
 				++K_in_universe;
 			}
-			else if (my_random(max_ran) < S_prob) {
+			else if (my_random(MAX_RAN) < S_PROB) {
 				universe[ux][uy] = 'S';
 				++SS_in_universe;
 			}
-			else if (my_random(max_ran) < W_prob) {
+			else if (my_random(MAX_RAN) < W_PROB) {
 				universe[ux][uy] = 'W';
 				
 			}
@@ -178,16 +176,16 @@ Create a universe of size (universe_size x universe_size).
 		universe[0][0] = '-';	// small bug in lrs which always counts
 		--K_in_universe;	//Kingons at 0x0 even if within 1 srs  
 	}				        // of universe top left hand corner.  
-	if ( universe[0][universe_size - 1] == 'K') {	// ISSUE1                            
-		universe[0][universe_size - 1] = '-';	// Need to do for SS as well?
+	if ( universe[0][UNIVERSE_SIZE - 1] == 'K') {	// ISSUE1                            
+		universe[0][UNIVERSE_SIZE - 1] = '-';	// Need to do for SS as well?
 		--K_in_universe;	// Maybe better to fix bug !!	
 	}   
-	if ( universe[universe_size - 1][0] == 'K') {
-		universe[universe_size - 1][0] = '-';
+	if ( universe[UNIVERSE_SIZE - 1][0] == 'K') {
+		universe[UNIVERSE_SIZE - 1][0] = '-';
 		--K_in_universe;
 	}
 
-	if ( universe[universe_size - 1][universe_size - 1] == 'K') {
+	if ( universe[UNIVERSE_SIZE - 1][UNIVERSE_SIZE - 1] == 'K') {
 		universe[0][0] = '-';
 		--K_in_universe;
 	}	
@@ -195,8 +193,8 @@ Create a universe of size (universe_size x universe_size).
 
 // Other fundamental game parameters 
 
-	max_energy = (4 * universe_size) +
-		     ( (K_prob / max_ran) * ( us_f * us_f ));
+	max_energy = (4 * UNIVERSE_SIZE) +
+		     ( (K_PROB / MAX_RAN) * ( US_F * US_F ));
 
 	energy = max_energy;
 
@@ -214,8 +212,8 @@ be closer to the edge by less than one short range scan.
 
 **********************************************************************/
 
-	ex = my_random(universe_size - 1 - (2 * srs_range)) + srs_range;
-	ey = my_random(universe_size - 1 - (2 * srs_range)) + srs_range;
+	ex = my_random(UNIVERSE_SIZE - 1 - (2 * SRS_RANGE)) + SRS_RANGE;
+	ey = my_random(UNIVERSE_SIZE - 1 - (2 * SRS_RANGE)) + SRS_RANGE;
 
 /*##DEBUG1 main#######################################################
 printf("DEBUG1 main\n");
@@ -235,7 +233,7 @@ Main program
 
 	intro();
 	clears(); 
-/*	srs(screen_rows/4);
+/*	srs(SCREEN_ROWS/4);
 	clears(); */
 	srs_noprint();
 	str();
@@ -264,7 +262,7 @@ Main program
 /* Short Range Scan */
 /* srs */	if ((c[0] == 's') && (c[1] == 'r') && (c[2] == 's')) { 
 			clears();
-			srs(screen_rows/4); 
+			srs(SCREEN_ROWS/4); 
 		}
 
 /* Phaser */
@@ -297,7 +295,7 @@ Main program
 			printf("Input [Factor][Direction]: "); 
 			scanf("%1d%1d", &warp_power, &warp_dir);
 			warp(warp_power, warp_dir);
-			star_date = star_date + (warp_power * srs_range);
+			star_date = star_date + (warp_power * SRS_RANGE);
 		}
 
 /* Warp to saved quadrant */
@@ -305,7 +303,7 @@ Main program
 			printf("Input [Quadrant save number]: "); 
 			scanf("%1d", &sqn);
 			warps(sqn);
-			star_date = star_date + srs_range;
+			star_date = star_date + SRS_RANGE;
 		}
 
 /* Energise Shields*/
@@ -449,8 +447,8 @@ void fphaser(int power, int dir)
 		printf("\nInvalid power or direction\n\n");
 		return;
 	}
-	else if ( power > (2 * srs_range) )
-		power = 2 * srs_range;
+	else if ( power > (2 * SRS_RANGE) )
+		power = 2 * SRS_RANGE;
 
 	if (phaser <= power) {
 		phaser = 0;
@@ -532,8 +530,8 @@ void fpt(int power, int dir)
 
 	if ( power == 0 || dir == 0 )
 		return;
-	else if ( power > (2 * srs_range) )
-		power = 2 * srs_range;
+	else if ( power > (2 * SRS_RANGE) )
+		power = 2 * SRS_RANGE;
 
 	if (energy <= power) {
 		shield = shield - K_in_sector - K_in_sector;
@@ -770,8 +768,8 @@ void impulse(int power, int dir)
 		return;
 	}
 
-	if ( power > srs_range )
-		power = srs_range;
+	if ( power > SRS_RANGE )
+		power = SRS_RANGE;
 
 
 	srs_flag = ( srs_flag <= 0 ) ? srs_flag + 1 : 1;
@@ -850,31 +848,31 @@ void warp(int power, int dir)
 	impulse_flag = ( impulse_flag <= 0 ) ? impulse_flag + 1 : 1;
 
 	if ( (power > 0) && (power <= 9) ) {
-		energy = energy - (power * srs_range) + 1;
+		energy = energy - (power * SRS_RANGE) + 1;
 		switch (dir) {
-		case 1:	x = ex - ((power * srs_range) + 1); 			
+		case 1:	x = ex - ((power * SRS_RANGE) + 1); 			
  			y = ey;
 			break;
-		case 2:	x = ex - ((power * srs_range) + 1);
-			y = ey + ((power * srs_range) + 1);
+		case 2:	x = ex - ((power * SRS_RANGE) + 1);
+			y = ey + ((power * SRS_RANGE) + 1);
 			break;
 		case 3:	x = ex;
-			y = ey + ((power * srs_range) + 1);
+			y = ey + ((power * SRS_RANGE) + 1);
 			break;
-		case 4:	x = ex + ((power * srs_range) + 1);
-			y = ey + ((power * srs_range) + 1);
+		case 4:	x = ex + ((power * SRS_RANGE) + 1);
+			y = ey + ((power * SRS_RANGE) + 1);
 			break;
-		case 5: x = ex + ((power * srs_range) + 1);
+		case 5: x = ex + ((power * SRS_RANGE) + 1);
 			y = ey;
 			break;
-		case 6: x = ex + ((power * srs_range) + 1);
-			y = ey - ((power * srs_range) + 1);
+		case 6: x = ex + ((power * SRS_RANGE) + 1);
+			y = ey - ((power * SRS_RANGE) + 1);
 			break;
 		case 7: x = ex;
-			y = ey - ((power * srs_range) + 1);
+			y = ey - ((power * SRS_RANGE) + 1);
 			break;
-		case 8:	x = ex - ((power * srs_range) + 1);
-			y = ey - ((power * srs_range) + 1);
+		case 8:	x = ex - ((power * SRS_RANGE) + 1);
+			y = ey - ((power * SRS_RANGE) + 1);
 			break;
 		}
 	
@@ -884,9 +882,9 @@ void warp(int power, int dir)
 
 	}
 	else if ( power == 0 ) {
-		energy = energy - (11 * srs_range);
-		x = my_random(universe_size);
-		y = my_random(universe_size);
+		energy = energy - (11 * SRS_RANGE);
+		x = my_random(UNIVERSE_SIZE);
+		y = my_random(UNIVERSE_SIZE);
 		clears();
 		printf("\nWarp Factor 10 - Hyperspace\n\n");
 		moveea(x,y);
@@ -902,7 +900,7 @@ void warps(int save_no) 	/* Warp to a saved sector */
 	}
 	else {
 		moveea(sex[save_no],sey[save_no]);
-		energy = energy - (15 * srs_range);
+		energy = energy - (15 * SRS_RANGE);
 		clears();
 		printf("\nWarp to saved sector: %d\n\n", save_no);
 	}
@@ -915,25 +913,25 @@ void clears(void)	/* Clear screen */
 
 	int i;
 
-	for (i = 0; i <= screen_rows; ++i)
+	for (i = 0; i <= SCREEN_ROWS; ++i)
 		printf("\n");
 }
 
 void us(void)		/* Universe Scan */
 {
-	FILE *us_file;
+	FILE *US_File;
 	int i = 0;
 
-	us_file = fopen("US.TXT", "wt");
-	for (ux = 0; (ux <= universe_size - 1); ++ux) {
-		fprintf(us_file, "%3d ", i);
+	US_File = fopen("US.TXT", "wt");
+	for (ux = 0; (ux <= UNIVERSE_SIZE - 1); ++ux) {
+		fprintf(US_File, "%3d ", i);
 		++i;
-		for (uy = 0; (uy <= universe_size - 1); ++uy)
-			fprintf(us_file, "%c ", universe[ux][uy]);
-		fputc('\n', us_file);	
+		for (uy = 0; (uy <= UNIVERSE_SIZE - 1); ++uy)
+			fprintf(US_File, "%c ", universe[ux][uy]);
+		fputc('\n', US_File);	
 	}
-	fflush(us_file);
-	fclose(us_file);
+	fflush(US_File);
+	fclose(US_File);
 }
 
 void map(void)		/* Map */
@@ -942,12 +940,12 @@ void map(void)		/* Map */
 	int i = 0;
 	int first_time_in = 1;
 
-	for (ux = 0; (ux <= universe_size - 1); ++ux) {
-		if ( i < screen_rows - 2 )
+	for (ux = 0; (ux <= UNIVERSE_SIZE - 1); ++ux) {
+		if ( i < SCREEN_ROWS - 2 )
 			printf("%6d ", ux);
 		++i; 
-		for (uy = 0; (uy <= universe_size - 1); ++uy) {
-			if (i == (screen_rows - 1) && uy == 0) {
+		for (uy = 0; (uy <= UNIVERSE_SIZE - 1); ++uy) {
+			if (i == (SCREEN_ROWS - 1) && uy == 0) {
 				i = 0;
 				if (first_time_in == 1) {
 					first_time_in = 0;
@@ -1015,30 +1013,30 @@ void lrs(int display_flag)	/* Long Range Scan */
 
 	energy = energy - 3;
 
-	lsx_s1_min = (ex - (3 * srs_range + 1)) < 0 ? 0 : ex - (3 * srs_range + 1);
-	lsy_s1_min = (ey - (3 * srs_range + 1)) < 0 ? 0 : ey - (3 * srs_range + 1);
-	lsx_s1_max = (ex - (srs_range + 1)) < 0 ? 0 : ex - (srs_range + 1);
-	lsy_s1_max = (ey - (srs_range + 1)) < 0 ? 0 : ey - (srs_range + 1);
+	lsx_s1_min = (ex - (3 * SRS_RANGE + 1)) < 0 ? 0 : ex - (3 * SRS_RANGE + 1);
+	lsy_s1_min = (ey - (3 * SRS_RANGE + 1)) < 0 ? 0 : ey - (3 * SRS_RANGE + 1);
+	lsx_s1_max = (ex - (SRS_RANGE + 1)) < 0 ? 0 : ex - (SRS_RANGE + 1);
+	lsy_s1_max = (ey - (SRS_RANGE + 1)) < 0 ? 0 : ey - (SRS_RANGE + 1);
 
 	lsx_s2_min = lsx_s1_min;
-	lsy_s2_min = (ey - srs_range < 0) ? 0 : ey - srs_range;
+	lsy_s2_min = (ey - SRS_RANGE < 0) ? 0 : ey - SRS_RANGE;
 	lsx_s2_max = lsx_s1_max;
-	lsy_s2_max = (ey + srs_range > (universe_size - 1)) ? universe_size - 1 
-							    : ey + srs_range;
+	lsy_s2_max = (ey + SRS_RANGE > (UNIVERSE_SIZE - 1)) ? UNIVERSE_SIZE - 1 
+							    : ey + SRS_RANGE;
 	lsx_s3_min = lsx_s1_min;
-	lsy_s3_min = (ey + (srs_range + 1)) > (universe_size - 1) ? 
-							universe_size - 1 
-						      : ey + (srs_range + 1);
+	lsy_s3_min = (ey + (SRS_RANGE + 1)) > (UNIVERSE_SIZE - 1) ? 
+							UNIVERSE_SIZE - 1 
+						      : ey + (SRS_RANGE + 1);
 	lsx_s3_max = lsx_s1_max;
-	lsy_s3_max = (ey + (3 * srs_range + 1)) > (universe_size - 1) ?
-							universe_size - 1
-						      : ey + (3 * srs_range + 1);
+	lsy_s3_max = (ey + (3 * SRS_RANGE + 1)) > (UNIVERSE_SIZE - 1) ?
+							UNIVERSE_SIZE - 1
+						      : ey + (3 * SRS_RANGE + 1);
 
-	lsx_s4_min = (ex - srs_range < 0) ? 0 : ex - srs_range; 
+	lsx_s4_min = (ex - SRS_RANGE < 0) ? 0 : ex - SRS_RANGE; 
 	lsy_s4_min = lsy_s1_min;
-	lsx_s4_max = (ex + srs_range) > (universe_size - 1) ?
-							universe_size - 1
-						      :	ex + srs_range;
+	lsx_s4_max = (ex + SRS_RANGE) > (UNIVERSE_SIZE - 1) ?
+							UNIVERSE_SIZE - 1
+						      :	ex + SRS_RANGE;
 	lsy_s4_max = lsy_s1_max;
 
 	lsx_s5_min = lsx_s4_min;
@@ -1046,10 +1044,10 @@ void lrs(int display_flag)	/* Long Range Scan */
 	lsx_s5_max = lsx_s4_max;
 	lsy_s5_max = lsy_s3_max;
  
-	lsx_s6_min = ((ex + srs_range) + 1 < 0) ? 0 : ex + srs_range + 1;
+	lsx_s6_min = ((ex + SRS_RANGE) + 1 < 0) ? 0 : ex + SRS_RANGE + 1;
 	lsy_s6_min = lsy_s1_min;
-	lsx_s6_max = ((ex + (3 * srs_range) + 1) > (universe_size - 1)) ? universe_size - 1
-							    : ex + (3 * srs_range) + 1; 
+	lsx_s6_max = ((ex + (3 * SRS_RANGE) + 1) > (UNIVERSE_SIZE - 1)) ? UNIVERSE_SIZE - 1
+							    : ex + (3 * SRS_RANGE) + 1; 
 	lsy_s6_max = lsy_s1_max;
 
 	lsx_s7_min = lsx_s6_min;
@@ -1393,9 +1391,9 @@ void srs_noprint(void)		/* Short range scan to get sector stats simular to srs b
 	S_in_sector = 0;
 	W_in_sector = 0;
 
-	for (ssx = (ex - srs_range); ssx <= (ex + srs_range); ++ssx) {
-		for ( ssy = (ey - srs_range); ssy <= (ey + srs_range); ++ssy ) {
-			if ( ssx > 0 && ssx < (universe_size - 1) && ssy > 0 && ssy < (universe_size - 1)) {
+	for (ssx = (ex - SRS_RANGE); ssx <= (ex + SRS_RANGE); ++ssx) {
+		for ( ssy = (ey - SRS_RANGE); ssy <= (ey + SRS_RANGE); ++ssy ) {
+			if ( ssx > 0 && ssx < (UNIVERSE_SIZE - 1) && ssy > 0 && ssy < (UNIVERSE_SIZE - 1)) {
 				if (universe[ssx][ssy] == 'K')
 					++K_in_sector;
 				else if (universe[ssx][ssy] == 'S')
@@ -1428,21 +1426,21 @@ void srs(int no_lines)		/* Short Range Scan */
 	else {
 		printf("            ");
 		printf("8");
-		for (i = 0; (i <= srs_range + 3); ++i) 
+		for (i = 0; (i <= SRS_RANGE + 3); ++i) 
 			printf(" ");
 		printf("1");
-		for (i = 0; (i <= srs_range + 3); ++i)
+		for (i = 0; (i <= SRS_RANGE + 3); ++i)
 			printf(" ");
 		printf("2\n");		
-		for (ssx = (ex - srs_range); ssx <= (ex + srs_range); ++ssx) {
+		for (ssx = (ex - SRS_RANGE); ssx <= (ex + SRS_RANGE); ++ssx) {
 			if ( ssx == ex )
 				printf("            7 ");
 			else
 				printf("              "); 
-			for ( ssy = (ey - srs_range); ssy <= (ey + srs_range); ++ssy ) {
-				if ( ssx < 0 || ssx > (universe_size - 1) )
+			for ( ssy = (ey - SRS_RANGE); ssy <= (ey + SRS_RANGE); ++ssy ) {
+				if ( ssx < 0 || ssx > (UNIVERSE_SIZE - 1) )
 					printf("  ");
-				else if ( ssy < 0 || ssy > (universe_size - 1) )
+				else if ( ssy < 0 || ssy > (UNIVERSE_SIZE - 1) )
 					printf("  ");
 				else {
 					if ( universe[ssx][ssy] == 'N' )
@@ -1457,17 +1455,17 @@ void srs(int no_lines)		/* Short Range Scan */
 					else if (universe[ssx][ssy] == 'W')
 						++W_in_sector;
 				}
-				if ( ssy == (ey + srs_range) && ssx == ex )
+				if ( ssy == (ey + SRS_RANGE) && ssx == ex )
 				printf("3");
 			}
 			printf("\n");
 		}
 		printf("            ");
 		printf("6");
-		for (i = 0; (i <= srs_range + 3); ++i) 
+		for (i = 0; (i <= SRS_RANGE + 3); ++i) 
 			printf(" ");
 		printf("5");
-		for (i = 0; (i <= srs_range + 3); ++i)
+		for (i = 0; (i <= SRS_RANGE + 3); ++i)
 			printf(" ");
 		printf("4\n");		
 		for (i = 0; (i <= no_lines); ++i)
@@ -1495,13 +1493,13 @@ void moveer(int iex, int iey)	/* Move Enterprise relative */
 	universe[ex][ey] = '-';
 	ex = ex + iex;
 	ey = ey + iey;
-	if ( ex < 0 || ex > ( universe_size - 1 )) {
+	if ( ex < 0 || ex > ( UNIVERSE_SIZE - 1 )) {
 		ex = ex - iex;
 		ey = ey - iey;
 		printf("You cannot escape the bounds of the universe.\n");
 		damage(3);
 	}
-	else if ( ey < 0 || ey > ( universe_size - 1 )) {
+	else if ( ey < 0 || ey > ( UNIVERSE_SIZE - 1 )) {
 		ex = ex - iex;
 		ey = ey - iey;		
 		printf("You cannot escape the bounds of the universe.\n");
@@ -1549,7 +1547,7 @@ void moveea(int aex, int aey)	/* Move Enterprise absolute */
 	ex = aex;
 	ey = aey;
 
-	if ( ex < 0 || ey < 0 || ex > ( universe_size - 1 ) || ey > ( universe_size - 1 )) {
+	if ( ex < 0 || ey < 0 || ex > ( UNIVERSE_SIZE - 1 ) || ey > ( UNIVERSE_SIZE - 1 )) {
 
 		ex = sex; /* Return Enterprise to start position */
 		ey = sey;
@@ -1613,7 +1611,7 @@ void moveea(int aex, int aey)	/* Move Enterprise absolute */
 			damage(my_random(5));
 		}
 		printf("\n");
-		moveea(my_random(universe_size - 1), my_random(universe_size - 1));
+		moveea(my_random(UNIVERSE_SIZE - 1), my_random(UNIVERSE_SIZE - 1));
 	}
 	
 	else if ( universe[ex][ey] == 'S' ) {
@@ -1627,7 +1625,7 @@ void moveea(int aex, int aey)	/* Move Enterprise absolute */
 		else {
 
 			if ( star_date > can_dock_date) {
-				can_dock_date = star_date + max_no_dock;	
+				can_dock_date = star_date + MAX_NO_DOCK;	
 				printf("\nYou have docked sucesssfully.\n");
 				star_date = star_date + (max_energy - energy) / 4;
 				star_date = star_date - ((srs_flag + lrs_flag + es_flag + phaser_flag +
@@ -2072,8 +2070,8 @@ void save_game(void)
 	
 	
 	fputc(':', game_status);
-	for (ux = 0; ux <= (universe_size - 1); ++ux) {
-		for ( uy = 0; uy <= (universe_size - 1); ++uy ) {
+	for (ux = 0; ux <= (UNIVERSE_SIZE - 1); ++ux) {
+		for ( uy = 0; uy <= (UNIVERSE_SIZE - 1); ++uy ) {
 			fputc(universe[ux][uy], game_status);
 		}
 	}
@@ -2205,8 +2203,8 @@ int load_game(void)
 
 	do  c = fgetc(game_status); while (c != ':');
 	/* Save Universe */
-	for (ux = 0; ux <= (universe_size - 1); ++ux) {
-		for ( uy = 0; uy <= (universe_size - 1); ++uy ) {
+	for (ux = 0; ux <= (UNIVERSE_SIZE - 1); ++ux) {
+		for ( uy = 0; uy <= (UNIVERSE_SIZE - 1); ++uy ) {
 			universe[ux][uy] = fgetc(game_status);
 		}
 	}
@@ -2243,7 +2241,7 @@ int ins(void)		/* startup instructions */
 			cr++;
 			nline_flag = 1;
 		}
-		if (cr == (screen_rows - 4)) {
+		if (cr == (SCREEN_ROWS - 4)) {
 			cr = cr;
 			cr = 0;
 			lines(2);
@@ -2271,7 +2269,7 @@ int ins(void)		/* startup instructions */
 		} 
 	}
 
-	lines(screen_rows - cr - 3);
+	lines(SCREEN_ROWS - cr - 3);
 	printf("Type <RETURN> to continue");
 	getchar();
 	clears();
