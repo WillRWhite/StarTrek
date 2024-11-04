@@ -1790,18 +1790,18 @@ DAMAGE5	- You attack a Space Station.
 	case 0 : break;
 	case 1 : if (shield > 20 && shield <= 30) {					
 			--ep_flag;
-            printf("Shield energy is less than 30 percent, you have suffered damage\n");
+            printf("Shield energy is less than 30%%, you have suffered damage\n");
 		}
 		else if (shield > 10 && shield <= 20) {	
 			--ep_flag;
 			--warp_flag;
-			printf("Shield energy is less than 20 percent, you have suffered damage\n");
+			printf("Shield energy is less than 20%%, you have suffered damage\n");
 		}
 		else if ( shield > 0 && shield <= 10) {
 			--ep_flag;
 			--warp_flag;
 			--lrs_flag;
-			printf("Sheild energy is less than 10 percent, you have suffered damage\n");
+			printf("Sheild energy is less than 10%%, you have suffered damage\n");
 		}
 		else if ( shield <= 0 ) {
 			energy = energy + shield - K_in_sector - K_in_sector - K_in_sector;
@@ -1817,14 +1817,14 @@ DAMAGE5	- You attack a Space Station.
 	case 2 : if (shield > 20 && shield <= 30) {						
 			--es_flag;
 			--squad_flag;
-			printf("Sheild energy is less than 30 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 30%%, you have suffered damage\n\n");
 		}
 		else if (shield > 10 && shield <= 20) {	
 			--es_flag;
 			--phaser_flag;
 			--srs_flag;
 			--squad_flag;
-			printf("Sheild energy is less than 20 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 20%%, you have suffered damage\n\n");
 		}
 		else if ( shield > 0 && shield <= 10) {
 			--es_flag;
@@ -1832,7 +1832,7 @@ DAMAGE5	- You attack a Space Station.
 			--impulse_flag;
 			--srs_flag;
 			--squad_flag;
-			printf("Sheild energy is less than 10 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 10%%, you have suffered damage\n\n");
 		}
 		else if ( shield <= 0 ) {
 			energy = energy + shield - K_in_sector - K_in_sector - K_in_sector;
@@ -1849,20 +1849,20 @@ DAMAGE5	- You attack a Space Station.
 	case 3 : if (shield > 20 && shield <= 30) {					
 			energy = energy - 50;
 			--es_flag;
-			printf("Sheild energy is less than 30 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 30%%, you have suffered damage\n\n");
 		}
 		else if (shield > 10 && shield <= 20) {	
 			energy = energy - 50;
 			--es_flag;
 			--pt_flag;
-			printf("Sheild energy is less than 20 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 20%%, you have suffered damage\n\n");
 		}
 		else if ( shield > 0 && shield <= 10) {
 			energy = energy - 50;
 			--es_flag;
 			--pt_flag;
 			--srs_flag;
-			printf("Sheild energy is less than 10 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 10%%, you have suffered damage\n\n");
 		}
 		else if ( shield <= 0 ) {
 			energy = energy + shield - 50;
@@ -1881,14 +1881,14 @@ DAMAGE5	- You attack a Space Station.
 			energy = energy - K_in_sector - K_in_sector - 20;
 			--es_flag;
 			--squad_flag;
-			printf("Sheild energy is less than 30 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 30%%, you have suffered damage\n\n");
 		}
 		else if (shield > 10 && shield <= 20) {	
 			energy = energy - K_in_sector - K_in_sector - 20;
 			--es_flag;
 			--squad_flag;
 			pt_flag = pt_flag - 2;
-			printf("Sheild energy is less than 20 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 20%%, you have suffered damage\n\n");
 		}
 		else if ( shield > 0 && shield <= 10) {
 			energy = energy - K_in_sector - K_in_sector - 20;
@@ -1896,7 +1896,7 @@ DAMAGE5	- You attack a Space Station.
 			squad_flag = squad_flag - 2;
 			pt_flag = pt_flag - 2;
 			lrs_flag = lrs_flag -2;
-			printf("Sheild energy is less than 10 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 10%%, you have suffered damage\n\n");
 		}
 		else if ( shield <= 0 ) {
 			energy = energy - K_in_sector - K_in_sector - 20;
@@ -1915,7 +1915,7 @@ DAMAGE5	- You attack a Space Station.
 			--es_flag;
 			--pt_flag;
 			squad_flag = squad_flag - 2;
-			printf("Sheild energy is less than 30 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 30%%, you have suffered damage\n\n");
 		}
 		else if (shield > 10 && shield <= 20) {	
 			energy = energy - K_in_sector - K_in_sector - 20;
@@ -1923,7 +1923,7 @@ DAMAGE5	- You attack a Space Station.
 			pt_flag = pt_flag - 2;
 			--lrs_flag;
 			squad_flag = squad_flag - 2;
-			printf("Sheild energy is less than 20 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 20%%, you have suffered damage\n\n");
 		}
 		else if ( shield > 0 && shield <= 10) {
 			energy = energy - K_in_sector - K_in_sector - 20;
@@ -1931,7 +1931,7 @@ DAMAGE5	- You attack a Space Station.
 			pt_flag = pt_flag - 2;
 			lrs_flag = lrs_flag - 2;
 			squad_flag = squad_flag - 3;
-			printf("Sheild energy is less than 10 percent, you have suffered damage\n\n");
+			printf("Sheild energy is less than 10%%, you have suffered damage\n\n");
 		}
 		else if ( shield <= 0 ) {
 			energy = energy - K_in_sector - K_in_sector - 20;

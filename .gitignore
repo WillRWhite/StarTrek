@@ -31,6 +31,7 @@
 # Executables
 st
 test_random
+test
 *.exe
 *.out
 *.app
@@ -40,6 +41,7 @@ test_random
 
 # Debug files
 test_random.c
+test.c
 *.dSYM/
 *.su
 *.idb
@@ -56,3 +58,7 @@ dkms.conf
 
 # vscode
 .vscode
+
+# Game files
+*.SAV
+*.sav
