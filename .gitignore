@@ -29,6 +29,8 @@
 *.dylib
 
 # Executables
+st
+test_random
 *.exe
 *.out
 *.app
@@ -37,6 +39,7 @@
 *.hex
 
 # Debug files
+test_random.c
 *.dSYM/
 *.su
 *.idb
@@ -50,3 +53,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# vscode
+.vscode
