@@ -1,10 +1,6 @@
 /************************************************************************************
 
 ISSUE1
-BUG1
-BUG2
-
-
 
 			STAR TRECK Version 1.02b
 
@@ -25,16 +21,20 @@ X increases from top to bottom
 
 ************************************************************************************/
 
+// Get the following compile error with MS Visual Studio 2022
+// Error	C4996	'scanf': This function or variable may be unsafe.Consider using scanf_s instead.
+// To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
+// Add the following statement befire inclusion of the libraries
+#define _CRT_SECURE_NO_WARNINGS
+
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-/********************** Fundamental game parameters ********************************/
+/******************************************* game parameters **************************************/
 
 #define UNIVERSE_SIZE 60			// 60   Universe sise, type int 
-//#define US_F 60.0		  			//  60.0 Float universe size, type float
-#define US_F (float) UNIVERSE_SIZE 	// 3   Short Range Scan range, type int
 #define SRS_RANGE 3					// 3   Short Range Scan range, type int 
 #define SCREEN_ROWS 25
 #define K_PROB 45.0					// 45.0 Klingon probability, type float 
@@ -42,101 +42,101 @@ X increases from top to bottom
 #define W_PROB 1					// 1   Worm Hole probability, type int
 #define MAX_RAN 800					// 800 Max my_random numbers for K and S per MAX_RAN, type int
 #define MAX_NO_DOCK 15				// 15   Max. elapse time after dock before re-dock, type int
-/* Also see */						// Other fundamental game parameters approx. line 139
+// Also see 						// Other fundamental game parameters approx. line 139
 
-/********************* End Fundamental game parameters *****************************/
+/******************************************* game parameters **************************************/
 
 char universe[UNIVERSE_SIZE][UNIVERSE_SIZE];
-int star_date = 1000;		/* Star date */
-int max_star_date;		/* Game end date */
+int star_date = 1000;				// Star date 
+int max_star_date;					// Game end date 
 
-int ux, uy; 			/* Universe cords. */
-int ex, ey;			/* xy cords. of Enterprise */
-int dex = 0, dey = 0;		/* xy cords. of docked Enterprise */
-int sex[5], sey[5];		/* Sector saves */
-int sector_saved_already[4];	/* Flag to indicate sector already saved */
-int ssK[4], ssS[4], ssW[4];	/* K, S & W count for sector save */
-int can_dock_date;		/* Docked clock - no docking after dock for a period of time */
-int K_in_universe = 0;		/* Number of Klingons in universe */
-int SS_in_universe = 0;		/* Space Stations in universe */
-int K_in_sector;		/* Klingons in current sector */
-int S_in_sector;		/* Space Stations in current sector */
-int W_in_sector;		/* Worm Hole in current sector */
-int K_count[8];			/* Klingon count for LRS */
-int S_count[8];			/* Space Station count for LRS */
-int W_count[8];			/* Worm hole count for LRS */
+int ux, uy; 						// Universe cords. 
+int ex, ey;							// xy cords. of Enterprise 
+int dex = 0, dey = 0;				// xy cords. of docked Enterprise 
+int sex[5], sey[5];					// Sector saves 
+int sector_saved_already[4];		// Flag to indicate sector already saved 
+int ssK[4], ssS[4], ssW[4];			// K, S & W count for sector save 
+int can_dock_date;					// Docked clock - no docking after dock for a period of time 
+int K_in_universe = 0;				// Number of Klingons in universe 
+int SS_in_universe = 0;				// Space Stations in universe 
+int K_in_sector;					// Klingons in current sector 
+int S_in_sector;					// Space Stations in current sector 
+int W_in_sector;					// Worm Hole in current sector 
+int K_count[8];						// Klingon count for LRS 
+int S_count[8];						// Space Station count for LRS 
+int W_count[8];						// Worm hole count for LRS 
 
-int shield = 0;			/* Shields fully charged at 99 */
-int phaser = 0;			/* Phasers fully charged at 50 */
-float  max_energy, energy;	/* Consumed by Phasers, Photon Torpedoes, */
-				/* Impulse, Warp, SRS, LRS  */
-int phaser_power, phaser_dir;	/* Phaser direction & power */
-int pt, max_pt;			/* Photon torpedoes */
-int pt_power, pt_dir;		/* Photon Torpedoes power & direction */
-int impulse_power, impulse_dir;	/* Impulse power & direction */
-int warp_power, warp_dir;	/* Warp power & direction */
+int shield = 0;						// Shields fully charged at 99 
+int phaser = 0;						// Phasers fully charged at 50 
+float  max_energy, energy;			// Consumed by Phasers, Photon Torpedoes, 
+									// Impulse, Warp, SRS, LRS  
+int phaser_power, phaser_dir;		// Phaser direction & power 
+int pt, max_pt;						// Photon torpedoes 
+int pt_power, pt_dir;				// Photon Torpedoes power & direction 
+int impulse_power, impulse_dir;		// Impulse power & direction 
+int warp_power, warp_dir;			// Warp power & direction 
 
-int srs_flag = 1;		/* If <= 0 srs not available */
-int lrs_flag = 1;		/* If <= 0 lrs not available */
-int es_flag = 1;		/* if <= 0 cannot energise shields */
-int phaser_flag = 1;		/* if <= 0 phasers not available */
-int ep_flag = 1;		/* if <= 0 cannot energise phasers */
-int pt_flag = 1;		/* if <= 0 photon torpedoes not available */
-int warp_flag = 1;		/* if <= 0 Warp power not available */
-int impulse_flag = 1;		/* if <= 0 Impulse power not available */
-int squad_flag = 1;		/* if <= 0 save quadrant not availablr */
-int warp_active = 0;		/* Need flag for SS collision */
-int worm_active = 0;		/* Flag fro worm hole active during moveea for recursave call */
+int srs_flag = 1;					// If <= 0 srs not available 
+int lrs_flag = 1;					// If <= 0 lrs not available 
+int es_flag = 1;					// if <= 0 cannot energise shields 
+int phaser_flag = 1;				// if <= 0 phasers not available 
+int ep_flag = 1;					// if <= 0 cannot energise phasers 
+int pt_flag = 1;					// if <= 0 photon torpedoes not available 
+int warp_flag = 1;					// if <= 0 Warp power not available 
+int impulse_flag = 1;				// if <= 0 Impulse power not available 
+int squad_flag = 1;					// if <= 0 save quadrant not availablr 
+int warp_active = 0;				// Need flag for SS collision 
+int worm_active = 0;				// Flag fro worm hole active during moveea for recursave call 
 
 
-void us(void);				/* Universe Scan, DEBUG function */
-void map(void);				/* Map */
-void lrs(int display_flag);		/* Long Range Scan */
-void srs(int no_lines);			/* Short Range Scan */
-void srs_noprint(void);			/* Short range scan to get sector stats simular to srs but no display */
-void clears(void);			/* Clear Screen */
-/* void moveer(int iex, int iey); */ 	/* Move Eeterprise relative */
-void moveea(int aex, int aey);		/* Move Enterprise absolute */
-void fphaser(int power, int dir); 	/* Fire Phaser */
-void fpt(int power, int dir);		/* Fire Photon Torpedoes */
-void impulse(int power, int dir);	/* Impulse power */
-void warp(int power, int dir);		/* Warp power */
-void warps(int save_no);		/* Warp to saved sector */
-void str(void);				/* Statur Report */
-void damage(int dlevel);		/* Allocate damage */
-void intro(void);			/* Intro Screen */
-/* void instructions(void); */		/* Game instructions */
+void us(void);						// Universe Scan, DEBUG function
+void map(void);						// Map
+void lrs(int display_flag);			// Long Range Scan 
+void srs(int no_lines);				// Short Range Scan 
+void srs_noprint(void);				// Short range scan to get sector stats simular to srs but no display 
+void clears(void);					// Clear Screen
+// void moveer(int iex, int iey);  	// Move Eeterprise relative
+void moveea(int aex, int aey);		// Move Enterprise absolute 
+void fphaser(int power, int dir); 	// Fire Phaser
+void fpt(int power, int dir);		// Fire Photon Torpedoes
+void impulse(int power, int dir);	// Impulse power
+void warp(int power, int dir);		// Warp power 
+void warps(int save_no);			// Warp to saved sector 
+void str(void);						// Statur Report
+void damage(int dlevel);			// Allocate damage 
+void intro(void);					// Intro Screen 
+// void instructions(void); 		// Game instructions 
 int ins(void);
-void squad(int);			/* Save Quadrant */
-void lines(int lines);			/* print lines */
-void save_game(void);			/* Save game */
-int load_game(void);			/* Load game */
+void squad(int);					// Save Quadrant 
+void lines(int lines);				// print lines 
+void save_game(void);				// Save game 
+int load_game(void);				// Load game 
 void lines(int);
-int my_random(int); //Emulates assumed behaviour of old Borland Tubro C function.
+int my_random(int); 				// Emulates assumed behaviour of old Borland Tubro C function
 
 int main()
 {
 
-	int no_lines;			/* Number of lines for SRS */
-	char c[] = "xxxx";		/* Input command */
+	int no_lines;					// Number of lines for SRS 
+	char c[] = "xxxx";				// Input command 
 
-	int e;		/* Energy value for shields and phasers */
-	int p; 		/* Power value for shields and phasers */
-	int sn;		/* Save number for Save Quadrant, squad */
-	int sqn;	/* Sectro save number */
+	int e;							// Energy value for shields and phasers 
+	int p; 							// Power value for shields and phasers 
+	int sn;							// Save number for Save Quadrant, squad 
+	int sqn;						// Sectro save number 
 	int i;
 
 
-	for (i = 0; i <= 4; i++)		/* Initilise sector_saved_already array */
+	for (i = 0; i <= 4; i++)		// Initilise sector_saved_already array 
 		sector_saved_already[i] = 0;
 
-	for (i = 0; i <= 3; i++)		/* Initilise ssK array */
+	for (i = 0; i <= 3; i++)		// Initilise ssK array 
 		ssK[i] = 0;
 
-	for (i = 0; i <= 3; i++)		/* Initilise ssS array */
+	for (i = 0; i <= 3; i++)		// Initilise ssS array 
 		ssS[i] = 0;
 
-	for (i = 0; i <= 3; i++)		/* Initilise ssW array */
+	for (i = 0; i <= 3; i++)		// Initilise ssW array 
 		ssW[i] = 0;	
 
 /**********************************************************************
@@ -172,36 +172,33 @@ Create a universe of size (UNIVERSE_SIZE x UNIVERSE_SIZE).
 
 
 
-	if ( universe[0][0] == 'K') {	// Make sure no Klingon at 0x0 to avoid
-		universe[0][0] = '-';	// small bug in lrs which always counts
-		--K_in_universe;	//Kingons at 0x0 even if within 1 srs  
-	}				        // of universe top left hand corner.  
+	if ( universe[0][0] == 'K') {					// Make sure no Klingon at 0x0 to avoid
+		universe[0][0] = '-';						// small bug in lrs which always counts
+		--K_in_universe;							//Kingons at 0x0 even if within 1 srs  
+	}				        						// of universe top left hand corner.  
 	if ( universe[0][UNIVERSE_SIZE - 1] == 'K') {	// ISSUE1                            
-		universe[0][UNIVERSE_SIZE - 1] = '-';	// Need to do for SS as well?
-		--K_in_universe;	// Maybe better to fix bug !!	
+		universe[0][UNIVERSE_SIZE - 1] = '-';		// Need to do for SS as well?
+		--K_in_universe;							// Maybe better to fix bug !!	
 	}   
 	if ( universe[UNIVERSE_SIZE - 1][0] == 'K') {
 		universe[UNIVERSE_SIZE - 1][0] = '-';
 		--K_in_universe;
 	}
-
 	if ( universe[UNIVERSE_SIZE - 1][UNIVERSE_SIZE - 1] == 'K') {
 		universe[0][0] = '-';
 		--K_in_universe;
 	}	
 
 
-// Other fundamental game parameters 
+// Other game parameters 
 
-	max_energy = (4 * UNIVERSE_SIZE) +
-		     ( (K_PROB / MAX_RAN) * ( US_F * US_F ));
+	max_energy = (4 * UNIVERSE_SIZE) + ( (K_PROB / MAX_RAN) * ( (float) UNIVERSE_SIZE * (float) UNIVERSE_SIZE ));
 
 	energy = max_energy;
 
-
-	max_star_date = K_in_universe * 18;	/* 18 Set max star date & Photon */
-	max_pt = K_in_universe/15;		/*    Torpedoes based on number  */
-	pt = max_pt;				/*    of Klingons in universe    */
+	max_star_date = K_in_universe * 18;	// 18 Set max star date & Photon 
+	max_pt = K_in_universe/15;			//    Torpedoes based on number  
+	pt = max_pt;						//    of Klingons in universe   
 
 	can_dock_date = star_date;
 
@@ -239,7 +236,7 @@ Main program
 	str();
 	
 	while ((c[0] != 'E') && (c[1] != 'X')) {
-		printf("Commands: srs, lrs, imp, wrp, wrq, sq, phr, pht, es, ep, str, help, ins, EX.\n\n");
+		printf("Commands: srs, lrs, map, imp, wrp, wrq, sq, phr, pht, es, ep, str, help, ins, EX.\n\n");
 		printf("Input command: ");
 		
 		/* If and only if you type in the complete word, help   */
@@ -408,6 +405,7 @@ Main program
 			clears();
 			printf("srs    	- Short Range Scan.\n");
 			printf("lrs    	- Long Range Scan.\n");
+			printf("map    	- Universe map.\n");
 			printf("imp 	- Impulse Power.\n");
 			printf("wrp	- Warp Power ( 2 for 1 sector move, 0 = Factor 10 ).\n");
 			printf("wrq	- Warp to saved quadrant.\n");
@@ -961,8 +959,12 @@ void map(void)		/* Map */
 					printf("%6d ", ux);
 				}
 			}
-			if (universe[ux][uy] == '-' || universe[ux][uy] == 'K' ||
-			    universe[ux][uy] == 'S' || universe[ux][uy] == 'W')
+			// Print full map
+			//putchar(universe[ux][uy]);
+
+			// Print map showing SS E, SS & WH
+			if (universe[ux][uy] == '-' || universe[ux][uy] == 'K')
+			//  universe[ux][uy] == 'S' || universe[ux][uy] == 'W')
 				putchar('-');
 			else
 				putchar(universe[ux][uy]);
@@ -1383,9 +1385,9 @@ printf("DEBUG14 lrs\n");
 	}
 }
 
-void srs_noprint(void)		/* Short range scan to get sector stats simular to srs but no display */
+void srs_noprint(void)		// Short range scan to get sector stats simular to srs but no display
 {
-	int ssx, ssy;	/* Short Range Scan cords */
+	int ssx, ssy;			// Short Range Scan cords */
 
 	K_in_sector = 0;
 	S_in_sector = 0;
@@ -1570,7 +1572,7 @@ void moveea(int aex, int aey)	/* Move Enterprise absolute */
 			clears();
 			printf("You cannot escape the bounds of the universe.\n");
 			printf("Enterprise Destroyed.\nGame over\n\n");
-/* BUG1 */		printf("DEBUG: Need to impede further play\n");  
+			exit(0);
 		}
 	}
 
@@ -1594,7 +1596,7 @@ void moveea(int aex, int aey)	/* Move Enterprise absolute */
 		if ( energy < 0 ) {
 			clears();
 			printf("Enterprise Destroyed.\nGame over\n\n");
-/* BUG2 */		printf("DEBUG: Need to impede further play\n"); 
+			exit(0);
 		}
 	}
 
