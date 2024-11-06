@@ -24,4 +24,4 @@ So for example if the last pre-release was 2.36 and you wish to make this an act
 ### Release history  
 
 1.   v0.01 - pre-release  
-2.
+2.   v0.02 - pre-release
