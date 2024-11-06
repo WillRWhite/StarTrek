@@ -2,7 +2,7 @@
 
 ISSUE1
 
-			STAR TRECK Version 1.02b
+			STAR TRECK Version 1.00
 
 
 Universe cords (X,Y)
@@ -22,17 +22,16 @@ X increases from top to bottom
 ************************************************************************************/
 
 // Get the following compile error with MS Visual Studio 2022
-// Error	C4996	'scanf': This function or variable may be unsafe.Consider using scanf_s instead.
-// To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
-// Add the following statement befire inclusion of the libraries
+// "Error	C4996	'scanf': This function or variable may be unsafe.Consider using scanf_s instead.
+// To disable deprecation, use _CRT_SECURE_NO_WARNINGS.""
+// Add the following statement befire inclusion of the libraries to supress above error
 #define _CRT_SECURE_NO_WARNINGS
-
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-/******************************************* game parameters **************************************/
+/******************************************* Game parameters **************************************/
 
 #define UNIVERSE_SIZE 60			// 60   Universe sise, type int 
 #define SRS_RANGE 3					// 3   Short Range Scan range, type int 
@@ -44,7 +43,7 @@ X increases from top to bottom
 #define MAX_NO_DOCK 15				// 15   Max. elapse time after dock before re-dock, type int
 // Also see 						// Other fundamental game parameters approx. line 139
 
-/******************************************* game parameters **************************************/
+/******************************************* Game parameters **************************************/
 
 char universe[UNIVERSE_SIZE][UNIVERSE_SIZE];
 int star_date = 1000;				// Star date 
@@ -91,6 +90,7 @@ int worm_active = 0;				// Flag fro worm hole active during moveea for recursave
 
 void us(void);						// Universe Scan, DEBUG function
 void map(void);						// Map
+void map_debug(void);				// Debug map
 void lrs(int display_flag);			// Long Range Scan 
 void srs(int no_lines);				// Short Range Scan 
 void srs_noprint(void);				// Short range scan to get sector stats simular to srs but no display 
@@ -102,7 +102,7 @@ void fpt(int power, int dir);		// Fire Photon Torpedoes
 void impulse(int power, int dir);	// Impulse power
 void warp(int power, int dir);		// Warp power 
 void warps(int save_no);			// Warp to saved sector 
-void str(void);						// Statur Report
+void str(void);						// Status Report
 void damage(int dlevel);			// Allocate damage 
 void intro(void);					// Intro Screen 
 // void instructions(void); 		// Game instructions 
@@ -111,7 +111,6 @@ void squad(int);					// Save Quadrant
 void lines(int lines);				// print lines 
 void save_game(void);				// Save game 
 int load_game(void);				// Load game 
-void lines(int);
 int my_random(int); 				// Emulates assumed behaviour of old Borland Tubro C function
 
 int main()
@@ -236,33 +235,31 @@ Main program
 	str();
 	
 	while ((c[0] != 'E') && (c[1] != 'X')) {
-		printf("Commands: srs, lrs, map, imp, wrp, wrq, sq, phr, pht, es, ep, str, help, ins, EX.\n\n");
+		printf("Commands: srs, lrs, map, imp, wrp, wrq, sq, phr, pht, es, ep, str, save, load, help, ins, EX.\n\n");
 		printf("Input command: ");
-		
-		/* If and only if you type in the complete word, help   */
-		/* it no longer runs the printf("Valid commands .....") */
-		/* ISSUE2                                               */
-		/* Fixed if c[] array is correct length for help ie 4   */
+		scanf("%s", c);
 
 		if (star_date > max_star_date) {
 			clears();
 			printf("You have run out of time. Current star date is: %4d\n", star_date);
 			printf("You should have been finished by: %4d\n", max_star_date);
 			printf("Gane Over\n");
+			exit(0);
+	
 		}
 
-		if ( energy <= 0 )
+		if ( energy <= 0 ) {
 			printf(" No energy available - Game over\n");
-		
-		scanf("%s", c);
+			exit(0);
+		}
 
-/* Short Range Scan */
+// Short Range Scan 
 /* srs */	if ((c[0] == 's') && (c[1] == 'r') && (c[2] == 's')) { 
 			clears();
 			srs(SCREEN_ROWS/4); 
 		}
 
-/* Phaser */
+// Phaser 
 /* phr */	else if ((c[0] == 'p') && (c[1] == 'h') && (c[2] == 'r')) {
 			printf("Input [Power][Direction]: "); 
 			scanf("%1d%1d", &phaser_power, &phaser_dir);
@@ -271,7 +268,7 @@ Main program
 		}
 
 
-/* Photon Torpedoes */
+// Photon Torpedoes
 /* pht */	else if ((c[0] == 'p') && (c[1] == 'h') && (c[2] == 't')) {
 			printf("Input [Power][Direction]: "); 
 			scanf("%1d%1d", &pt_power, &pt_dir);
@@ -279,7 +276,7 @@ Main program
 			star_date = star_date + 2;
 		}
 
-/* Impulse power */
+// Impulse power 
 /* imp */	else if ((c[0] == 'i') && (c[1] == 'm') && (c[2] == 'p')) {
 			printf("Input [Power][Direction]: "); 
 			scanf("%1d%1d", &impulse_power, &impulse_dir);
@@ -287,7 +284,7 @@ Main program
 			star_date = star_date + impulse_power;
 		}
 
-/* Warp power */
+// Warp power
 /* wrp */	else if ((c[0] == 'w') && (c[1] == 'r') && (c[2] == 'p')) {
 			printf("Input [Factor][Direction]: "); 
 			scanf("%1d%1d", &warp_power, &warp_dir);
@@ -295,7 +292,7 @@ Main program
 			star_date = star_date + (warp_power * SRS_RANGE);
 		}
 
-/* Warp to saved quadrant */
+// Warp to saved quadrant 
 /* wrq */	else if ((c[0] == 'w') && (c[1] == 'r') && (c[2] == 'q')) {
 			printf("Input [Quadrant save number]: "); 
 			scanf("%1d", &sqn);
@@ -303,7 +300,7 @@ Main program
 			star_date = star_date + SRS_RANGE;
 		}
 
-/* Energise Shields*/
+// Energise Shields
 /* es */	else if ((c[0] == 'e') && (c[1] == 's')) {
 			printf("Input Energy: "); 
 			scanf("%d", &e);
@@ -317,7 +314,7 @@ Main program
 			str();				
 		}
 
-/* Energise Phasers */
+// Energise Phasers 
 /* ep */	else if ((c[0] == 'e') && (c[1] == 'p')) {
 			printf("Input Energy: "); 
 			scanf("%d", &p);
@@ -331,38 +328,38 @@ Main program
 			str();				
 		}
 
-/* Long Range Scan */
+// Long Range Scan 
 /* lrs */		else if ((c[0] == 'l') && (c[1] == 'r') && (c[2] == 's')) { 
 			clears();
 			lrs(1);
 		}
 
-/* Clear Screen */ 
+// Clear Screen 
 /* clr */
 		else if ((c[0] == 'c') && (c[1] == 'l') && (c[2] == 'r'))  
 			clears();
 
-/* Enterprise Cordinates */
+// Enterprise Cordinates (hidden command)
 /* xy! */	else if ((c[0] == 'x') && (c[1] == 'y') && (c[2] == '!')) {
 			clears();
 			printf("ex,ey: %d,%d\n\n", ex, ey);
 		}
-/* Docked Enterprise cordinates */
+// Docked Enterprise cordinates (hidden command)
 /*dxy! */		else if ((c[0] == 'd') && (c[1] == 'x') && (c[2] == 'y') && (c[3] == '!')) {
 			clears();
 			printf("dex,dey: %d,%d\n\n", dex, dey);
 		}		
-/* Exit */
+// Exit 
 /* EX */	else if ((c[0] == 'E') && (c[1] == 'X'))
  			printf("\nGoing so soon !!\n");
 
-/* Status Report */
+// Status Report 
 /* str */	else if ((c[0] == 's') && (c[1] == 't') && (c[2] == 'r')) {
 			clears();
 			str();
 		}
 
-/* Save Quadrant */
+// Save Quadrant 
 /* sq */	else if ((c[0] == 's') && (c[1] == 'q')) {
 			printf("Input Save number: "); 
 			scanf("%d", &sn);
@@ -372,35 +369,42 @@ Main program
 			squad(sn);
 		}
 
-/* Universe Scan ( output to "US.TXT" ) */
+// Universe Scan ( hidden command output to "US.TXT" )
 /* us! */	else if ((c[0] == 'u') && (c[1] == 's') && (c[2] == '!')) {
 			clears();
 			us();
 			printf("Number of Kliongs left: %2d\n", K_in_universe);
 				
 		}
-/* Map */
+
+// Debug map (hidden command)
+/* map! */	else if ((c[0] == 'm') && (c[1] == 'a') && (c[2] == 'p') && (c[3] == '!')) {
+			clears();
+			map_debug();
+		}
+// Map 
 /* map */	else if ((c[0] == 'm') && (c[1] == 'a') && (c[2] == 'p')) {
 			clears();
 			map();
 		}
-/* Save Game */
+
+// Save Game 
 /* save */	else if ((c[0] == 's') && (c[1] == 'a') && (c[2] == 'v') && (c[3] == 'e')) {
 			clears();
 			save_game();
 		}
-/* Load Game */
+// Load Game
 /* load */	else if ((c[0] == 'l') && (c[1] == 'o') && (c[2] == 'a') && (c[3] == 'd')) {
 			clears();
 			load_game();
 		}
-/* Instructions */
+// Instructions
 /* ins */	else if ((c[0] == 'i') && (c[1] == 'n') && (c[2] == 's')) {
 			clears();
 			ins();
 			clears();
 		}
-/* Default */
+// Default 
 		else {
 			clears();
 			printf("srs    	- Short Range Scan.\n");
@@ -415,7 +419,6 @@ Main program
 			printf("es	- Energise Shields ( Max 100 ).\n");
 			printf("ep	- Energise Phasers ( Max 100 ).\n");
 			printf("str    	- Status Report.\n");
-			printf("sq	- Save Quadrant.\n");
 			printf("save	- Save game (note: only one game can be saved).\n");
 			printf("load	- Load game.\n");
 			printf("help   	- Help.\n");
@@ -498,7 +501,7 @@ void fphaser(int power, int dir)
 		else if (universe[x][y] == 'S') {
 			universe[x][y] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -589,7 +592,7 @@ void fpt(int power, int dir)
 		else if (universe[x][y] == 'S') {
 			universe[x][y] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -606,7 +609,7 @@ void fpt(int power, int dir)
 		else if (universe[x+1][y] == 'S') {
 			universe[x+1][y] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -623,7 +626,7 @@ void fpt(int power, int dir)
 		else if (universe[x-1][y] == 'S') {
 			universe[x-1][y] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -640,7 +643,7 @@ void fpt(int power, int dir)
 		else if (universe[x][y+1] == 'S') {
 			universe[x][y+1] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -657,7 +660,7 @@ void fpt(int power, int dir)
 		else if (universe[x][y-1] == 'S') {
 			universe[x][y-1] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -674,7 +677,7 @@ void fpt(int power, int dir)
 		else if (universe[x+1][y+1] == 'S') {
 			universe[x+1][y+1] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -691,7 +694,7 @@ void fpt(int power, int dir)
 		else if (universe[x-1][y-1] == 'S') {
 			universe[x-1][y-1] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -708,7 +711,7 @@ void fpt(int power, int dir)
 		else if (universe[x+1][y-1] == 'S') {
 			universe[x+1][y-1] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -726,7 +729,7 @@ void fpt(int power, int dir)
 		else if (universe[x-1][y+1] == 'S') {
 			universe[x-1][y+1] = 'X';
 			clears();
-			printf("You have attacked and severly damages a Space Station.\n");
+			printf("You have attacked and severely damages a Space Station.\n");
 			printf("The Space Station is badly damaged but manages to return fire.\n");
 			printf("You better run away before the Space Police catch you.\n");
 			damage(5);
@@ -938,6 +941,7 @@ void map(void)		/* Map */
 	int i = 0;
 	int first_time_in = 1;
 
+	energy = energy - 4;
 	for (ux = 0; (ux <= UNIVERSE_SIZE - 1); ++ux) {
 		if ( i < SCREEN_ROWS - 2 )
 			printf("%6d ", ux);
@@ -974,6 +978,51 @@ void map(void)		/* Map */
 	}
 }
 
+void map_debug(void)		// Debug Map
+{
+
+	int i = 0;
+	int first_time_in = 1;
+
+	energy = energy - 4;
+	for (ux = 0; (ux <= UNIVERSE_SIZE - 1); ++ux) {
+		if ( i < SCREEN_ROWS - 2 )
+			printf("%6d ", ux);
+		++i; 
+		for (uy = 0; (uy <= UNIVERSE_SIZE - 1); ++uy) {
+			if (i == (SCREEN_ROWS - 1) && uy == 0) {
+				i = 0;
+				if (first_time_in == 1) {
+					first_time_in = 0;
+					printf("<RETURN> to continue ");
+					getchar();
+					getchar();
+					printf("%6d ", ux);
+					
+				}
+				else {
+					printf("<RETURN> to continue ");
+					getchar();
+					printf("%6d ", ux);
+				}
+			}
+			// Print full map
+			putchar(universe[ux][uy]);
+
+			// Print map showing SS E, SS & WH
+			// if (universe[ux][uy] == '-' || universe[ux][uy] == 'K')
+			//  universe[ux][uy] == 'S' || universe[ux][uy] == 'W')
+			// 	putchar('-');
+			// else
+			//	putchar(universe[ux][uy]);
+		}
+		printf(" %d", ux);
+		putchar('\n');	
+	}
+}
+
+
+
 
 
 void lrs(int display_flag)	/* Long Range Scan */
@@ -988,23 +1037,23 @@ void lrs(int display_flag)	/* Long Range Scan */
 
 **********************************************************************/
 
-	int lsx, lsy;			/* Long Range Scan cords */
+	int lsx, lsy;					// Long Range Scan cords 
 
-	int lsx_s1_min, lsx_s1_max;	/* SECTOR8 min/max cords */
+	int lsx_s1_min, lsx_s1_max;		// SECTOR8 min/max cords 
 	int lsy_s1_min, lsy_s1_max;
-	int lsx_s2_min, lsx_s2_max;	/* SECTOR1 min/max cords */
+	int lsx_s2_min, lsx_s2_max;		// SECTOR1 min/max cords 
 	int lsy_s2_min, lsy_s2_max;
-	int lsx_s3_min, lsx_s3_max;	/* SECTOR2 min/max cords */
+	int lsx_s3_min, lsx_s3_max;		// SECTOR2 min/max cords 
 	int lsy_s3_min, lsy_s3_max;
-	int lsx_s4_min, lsx_s4_max;	/* SECTOR7 min/max cords */
+	int lsx_s4_min, lsx_s4_max;		// SECTOR7 min/max cords 
 	int lsy_s4_min, lsy_s4_max;
-	int lsx_s5_min, lsx_s5_max;	/* SECTOR3 min/max cords */
+	int lsx_s5_min, lsx_s5_max;		// SECTOR3 min/max cords 
 	int lsy_s5_min, lsy_s5_max;
-	int lsx_s6_min, lsx_s6_max;	/* SECTOR6 min/max cords */
+	int lsx_s6_min, lsx_s6_max;		// SECTOR6 min/max cords 
 	int lsy_s6_min, lsy_s6_max;
-	int lsx_s7_min, lsx_s7_max;	/* SECTOR5 min/max cords */
+	int lsx_s7_min, lsx_s7_max;		// SECTOR5 min/max cords 
 	int lsy_s7_min, lsy_s7_max;
-	int lsx_s8_min, lsx_s8_max;	/* SECTOR4 min/max cords */
+	int lsx_s8_min, lsx_s8_max;		// SECTOR4 min/max cords 
 	int lsy_s8_min, lsy_s8_max;
 
 	if (lrs_flag <= 0) {
@@ -1445,7 +1494,7 @@ void srs(int no_lines)		/* Short Range Scan */
 				else if ( ssy < 0 || ssy > (UNIVERSE_SIZE - 1) )
 					printf("  ");
 				else {
-					if ( universe[ssx][ssy] == 'N' )
+					if ( universe[ssx][ssy] == 'O' )
 						printf("%c ", '-');
 					else
 						printf("%c ", universe[ssx][ssy]);
@@ -1544,7 +1593,7 @@ void moveea(int aex, int aey)	/* Move Enterprise absolute */
 		worm_active = 0;
 	}
 	else
-		universe[ex][ey] = 'N'; /* Replace current Enterprise position with 'N' */
+		universe[ex][ey] = 'O'; /* Replace current Enterprise position with 'O' */
 
 	ex = aex;
 	ey = aey;
@@ -1724,8 +1773,8 @@ void str(void)	/* Status report */
 	printf("--------------------------------------------------------------------------\n");
 /*	printf("End date: %4d\n\n", max_star_date); */
 
-	printf("Energy:            %4.1f", (energy * 100)/max_energy);
-	printf(" %7.0f\n", energy);
+	printf("Energy:            %4.1f%%", (energy * 100)/max_energy);
+	printf(" %7.0f Energy Units\n", energy);
 
 	printf("Shields:           %4d\n", shield);
 	printf("Phasers:           %4d\n", phaser);
