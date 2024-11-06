@@ -30,9 +30,6 @@
 
 # Executables
 st
-test_random
-test
-test2
 *.exe
 *.out
 *.app
@@ -41,9 +38,7 @@ test2
 *.hex
 
 # Debug files
-test_random.c
-test.c
-test2.c
+test*
 *.dSYM/
 *.su
 *.idb

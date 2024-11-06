@@ -86,6 +86,7 @@ int impulse_flag = 1;				// if <= 0 Impulse power not available
 int squad_flag = 1;					// if <= 0 save quadrant not availablr 
 int warp_active = 0;				// Need flag for SS collision 
 int worm_active = 0;				// Flag fro worm hole active during moveea for recursave call 
+int lrs_beyond_bounds = 0;			// Test for LRS beyond the bounds of the universe
 
 
 void us(void);						// Universe Scan, DEBUG function
@@ -1112,6 +1113,15 @@ void lrs(int display_flag)	/* Long Range Scan */
 	lsx_s8_max = lsx_s6_max;
 	lsy_s8_max = lsy_s3_max;
 
+
+// Test for scan beyond the bounds of the universe
+
+if (lsx_s1_min == 0 || lsy_s1_min == 0 || lsx_s1_max == 0 || lsy_s1_max == 0 || lsy_s2_min == 0 || lsx_s4_min == 0 || lsx_s6_min == 0 ||
+    lsy_s2_max == UNIVERSE_SIZE - 1 || lsy_s3_min == UNIVERSE_SIZE - 1 || lsy_s3_max == UNIVERSE_SIZE - 1 || lsx_s4_max == UNIVERSE_SIZE - 1 ||
+	lsx_s6_max == UNIVERSE_SIZE - 1 ){
+	lrs_beyond_bounds = 1;
+	}
+
 /**********************************************************************
 
 Scan for SECTOR8
@@ -1411,27 +1421,32 @@ printf("DEBUG14 lrs\n");
 
 	if (display_flag != 0 ) {
 
-	printf("\t      ___________________________________\n"); 
-	printf("\t     |  SECTOR8  |  SECTOR1  |  SECTOR2  |\n");
-	printf("\t     |           |           |           |\n");
-	printf("\t     |  K =%3d   |  K =%3d   |  K =%3d   |\n", K_count[0], K_count[1], K_count[2]);  
-	printf("\t     |  S =%3d   |  S =%3d   |  S =%3d   |\n", S_count[0], S_count[1], S_count[2]);
-	printf("\t     |  W =%3d   |  W =%3d   |  W =%3d   |\n", W_count[0], W_count[1], W_count[2]);
-	printf("\t     |___________|___________|___________|\n");
-	printf("\t     |  SECTOR7  |           |  SECTOR3  |\n");
-	printf("\t     |           |           |           |\n");
-	printf("\t     |  K =%3d   |   SS E    |  K =%3d   |\n", K_count[3], K_count[4]);
-	printf("\t     |  S =%3d   |           |  S =%3d   |\n", S_count[3], S_count[4]);                      
-	printf("\t     |  W =%3d   |           |  W =%3d   |\n", W_count[3], W_count[4]);
-	printf("\t     |___________|___________|___________|\n");
-	printf("\t     |  SECTOR6  |  SECTOR5  |  SECTOR4  |\n");
-	printf("\t     |           |           |           |\n");
-	printf("\t     |  K =%3d   |  K =%3d   |  K =%3d   |\n", K_count[5], K_count[6], K_count[7]);  
-	printf("\t     |  S =%3d   |  S =%3d   |  S =%3d   |\n", S_count[5], S_count[6], S_count[7]);
-	printf("\t     |  W =%3d   |  W =%3d   |  W =%3d   |\n", W_count[5], W_count[6], W_count[7]);
-	printf("\t     |___________|___________|___________|\n");
-	lines(1);
+		printf("\t      ___________________________________\n"); 
+		printf("\t     |  SECTOR8  |  SECTOR1  |  SECTOR2  |\n");
+		printf("\t     |           |           |           |\n");
+		printf("\t     |  K =%3d   |  K =%3d   |  K =%3d   |\n", K_count[0], K_count[1], K_count[2]);  
+		printf("\t     |  S =%3d   |  S =%3d   |  S =%3d   |\n", S_count[0], S_count[1], S_count[2]);
+		printf("\t     |  W =%3d   |  W =%3d   |  W =%3d   |\n", W_count[0], W_count[1], W_count[2]);
+		printf("\t     |___________|___________|___________|\n");
+		printf("\t     |  SECTOR7  |           |  SECTOR3  |\n");
+		printf("\t     |           |           |           |\n");
+		printf("\t     |  K =%3d   |   SS E    |  K =%3d   |\n", K_count[3], K_count[4]);
+		printf("\t     |  S =%3d   |           |  S =%3d   |\n", S_count[3], S_count[4]);                      
+		printf("\t     |  W =%3d   |           |  W =%3d   |\n", W_count[3], W_count[4]);
+		printf("\t     |___________|___________|___________|\n");
+		printf("\t     |  SECTOR6  |  SECTOR5  |  SECTOR4  |\n");
+		printf("\t     |           |           |           |\n");
+		printf("\t     |  K =%3d   |  K =%3d   |  K =%3d   |\n", K_count[5], K_count[6], K_count[7]);  
+		printf("\t     |  S =%3d   |  S =%3d   |  S =%3d   |\n", S_count[5], S_count[6], S_count[7]);
+		printf("\t     |  W =%3d   |  W =%3d   |  W =%3d   |\n", W_count[5], W_count[6], W_count[7]);
+		printf("\t     |___________|___________|___________|\n");
+		lines(1);
 
+		if (lrs_beyond_bounds == 1){
+			printf("\t     Long range scan beyond universe bounds, data unreliable ");
+			lines(1);
+		}
+		lrs_beyond_bounds = 0;
 	}
 }
 

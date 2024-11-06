@@ -83,7 +83,8 @@ the number of Klingons, Space Stations and Wormholes
 in the surrounding sectors. The centre sector is the current 
 sector in which is the Star Ship Enterprise ( SS E ) is. To get the 
 Klingon, Space Station and Wormhole numbers for this sector you 
-need to run a “srs”.
+need to run a “srs”. Note that the "lrs" will show sprious data when
+the scan extends beyond the universe boundaries.
 
 Map - map
 ---------------------
