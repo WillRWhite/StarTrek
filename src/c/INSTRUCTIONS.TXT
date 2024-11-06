@@ -6,7 +6,7 @@ universe. The Klingons are represented by the character K, the
 Enterprise by E, Space Stations by S and Wormholes by W. Your life 
 support systems are only available for a given amount of time. If you 
 do not complete your mission within this time the game is over. When 
-the game commences the star date will be 1000 and the screen will 
+the game commences the current star date will be set and the screen will 
 display the star date when your life support systems will expire, 
 the number of Klingons to be destroyed and the number of Space 
 Stations and Wormholes in the universe, together with useful 

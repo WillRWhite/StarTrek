@@ -32,6 +32,7 @@
 st
 test_random
 test
+test2
 *.exe
 *.out
 *.app
@@ -42,6 +43,7 @@ test
 # Debug files
 test_random.c
 test.c
+test2.c
 *.dSYM/
 *.su
 *.idb

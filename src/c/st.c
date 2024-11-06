@@ -46,7 +46,7 @@ X increases from top to bottom
 /******************************************* Game parameters **************************************/
 
 char universe[UNIVERSE_SIZE][UNIVERSE_SIZE];
-int star_date = 1000;				// Star date 
+int star_date ;						// Star date 
 int max_star_date;					// Game end date 
 
 int ux, uy; 						// Universe cords. 
@@ -196,6 +196,7 @@ Create a universe of size (UNIVERSE_SIZE x UNIVERSE_SIZE).
 	energy = max_energy;
 
 	max_star_date = K_in_universe * 18;	// 18 Set max star date & Photon 
+	star_date = max_star_date/2;
 	max_pt = K_in_universe/15;			//    Torpedoes based on number  
 	pt = max_pt;						//    of Klingons in universe   
 
