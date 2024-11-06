@@ -894,7 +894,7 @@ void warp(int power, int dir)
 	}
 }			
 
-void warps(int save_no) 	/* Warp to a saved sector */
+void warps(int save_no) 	// Warp to a saved sector
 { 
 		
 	if (save_no < 0 || save_no > 3) {
@@ -911,7 +911,7 @@ void warps(int save_no) 	/* Warp to a saved sector */
 
 
 
-void clears(void)	/* Clear screen */
+void clears(void)	// Clear screen 
 {
 
 	int i;
@@ -920,7 +920,7 @@ void clears(void)	/* Clear screen */
 		printf("\n");
 }
 
-void us(void)		/* Universe Scan */
+void us(void)		// Universe Scan 
 {
 	FILE *US_File;
 	int i = 0;
@@ -937,7 +937,7 @@ void us(void)		/* Universe Scan */
 	fclose(US_File);
 }
 
-void map(void)		/* Map */
+void map(void)		// Map 
 {
 
 	int i = 0;
@@ -1010,24 +1010,13 @@ void map_debug(void)		// Debug Map
 			}
 			// Print full map
 			putchar(universe[ux][uy]);
-
-			// Print map showing SS E, SS & WH
-			// if (universe[ux][uy] == '-' || universe[ux][uy] == 'K')
-			//  universe[ux][uy] == 'S' || universe[ux][uy] == 'W')
-			// 	putchar('-');
-			// else
-			//	putchar(universe[ux][uy]);
 		}
 		printf(" %d", ux);
 		putchar('\n');	
 	}
 }
 
-
-
-
-
-void lrs(int display_flag)	/* Long Range Scan */
+void lrs(int display_flag)	// Long Range Scan 
 {
 
 /**********************************************************************
@@ -1452,7 +1441,7 @@ printf("DEBUG14 lrs\n");
 
 void srs_noprint(void)		// Short range scan to get sector stats simular to srs but no display
 {
-	int ssx, ssy;			// Short Range Scan cords */
+	int ssx, ssy;			// Short Range Scan cords 
 
 	K_in_sector = 0;
 	S_in_sector = 0;
@@ -1472,10 +1461,10 @@ void srs_noprint(void)		// Short range scan to get sector stats simular to srs b
 	}
 }
 
-void srs(int no_lines)		/* Short Range Scan */
+void srs(int no_lines)		// Short Range Scan 
 {
 
-	int ssx, ssy;	/* Short Range Scan cords */
+	int ssx, ssy;	// Short Range Scan cords 
 	int i;
 
 	if (srs_flag <= 0) {
@@ -1589,13 +1578,13 @@ void moveer(int iex, int iey)	/* Move Enterprise relative */
 
 */
 
-void moveea(int aex, int aey)	/* Move Enterprise absolute */
+void moveea(int aex, int aey)	// Move Enterprise absolute 
 {
 
-	int sex, sey;	/* Start position of Enterprise */
-	int w_unstable; /* Unstable Worm Hole */
+	int sex, sey;	// Start position of Enterprise 
+	int w_unstable; // Unstable Worm Hole 
 
-	sex = ex;	/* Need to be able to move back if collision with K etc */
+	sex = ex;	// Need to be able to move back if collision with K etc 
 	sey = ey; 
 
 
@@ -1609,14 +1598,14 @@ void moveea(int aex, int aey)	/* Move Enterprise absolute */
 		worm_active = 0;
 	}
 	else
-		universe[ex][ey] = 'O'; /* Replace current Enterprise position with 'O' */
+		universe[ex][ey] = 'O'; // Replace current Enterprise position with 'O' 
 
 	ex = aex;
 	ey = aey;
 
 	if ( ex < 0 || ey < 0 || ex > ( UNIVERSE_SIZE - 1 ) || ey > ( UNIVERSE_SIZE - 1 )) {
 
-		ex = sex; /* Return Enterprise to start position */
+		ex = sex; // Return Enterprise to start position 
 		ey = sey;
 		
 		printf("You cannot escape the bounds of the universe.\n");
@@ -1713,7 +1702,7 @@ void moveea(int aex, int aey)	/* Move Enterprise absolute */
 				
 			}
 			else {
-				ex = sex; /* Return Enterprise to start position */
+				ex = sex; // Return Enterprise to start position 
 				ey = sey;
 				printf("You cannot re-dock so quickly\n");
 			}
@@ -1730,7 +1719,7 @@ void moveea(int aex, int aey)	/* Move Enterprise absolute */
 	srs_noprint(); 
 }
 
-void squad(int save_no) /* Save Quadrant between 0 and 3 */
+void squad(int save_no) // Save Quadrant between 0 and 3 
 
 {
 
@@ -1782,12 +1771,12 @@ void squad(int save_no) /* Save Quadrant between 0 and 3 */
 	printf("\n");		
 }
 		
-void str(void)	/* Status report */
+void str(void)	// Status report 
 {
 
 	printf("Status Report: STAR DATE: %4d. Life support systems available until: %4d\n", star_date, max_star_date);
 	printf("--------------------------------------------------------------------------\n");
-/*	printf("End date: %4d\n\n", max_star_date); */
+//	printf("End date: %4d\n\n", max_star_date); 
 
 	printf("Energy:            %4.1f%%", (energy * 100)/max_energy);
 	printf(" %7.0f Energy Units\n", energy);
@@ -2022,7 +2011,7 @@ void intro(void)
 	printf("\t\t\t *    * STAR TRECK *    *\n");
 	printf("\t\t\t *    **************    *\n");
 	printf("\t\t\t *                      *\n");
-	printf("\t\t\t * Version 1.02b        *\n");
+	printf("\t\t\t * Version 1.0          *\n");
 	printf("\t\t\t * By William White     *\n");
 	printf("\t\t\t * All rights reserved  *\n");
 	printf("\t\t\t * * * * * * * * * * *  *\n");
@@ -2045,7 +2034,7 @@ void save_game(void)
 	
 	game_status = fopen("GAME1.SAV", "wt");
 	
-	/* Save cords. of Enterprise */
+	// Save cords. of Enterprise 
 	fputc(':', game_status);
 	fprintf(game_status, "%2d", ex);
 	fputc(':', game_status);
@@ -2163,14 +2152,14 @@ int load_game(void)
 	}
 
 	
-	/* Save cords. of Enterprise */
+	// Save cords. of Enterprise 
 	do  c = fgetc(game_status); while (c != ':');
 	fscanf(game_status, "%2d", &ex);
 	
 	do  c = fgetc(game_status); while (c != ':');
 	fscanf(game_status, "%2d", &ey);
 
-	/* Save docked Enterprise cords. */
+	// Save docked Enterprise cords. 
 	do  c = fgetc(game_status); while (c != ':');
 	fscanf(game_status, "%2d", &dex); 
 
@@ -2269,7 +2258,7 @@ int load_game(void)
 	
 
 	do  c = fgetc(game_status); while (c != ':');
-	/* Save Universe */
+	// Save Universe 
 	for (ux = 0; ux <= (UNIVERSE_SIZE - 1); ++ux) {
 		for ( uy = 0; uy <= (UNIVERSE_SIZE - 1); ++uy ) {
 			universe[ux][uy] = fgetc(game_status);
@@ -2282,17 +2271,18 @@ int load_game(void)
 	printf("\nGame GAME1.SAV loaded\n");
 }
 
-int ins(void)		/* startup instructions */
+int ins(void)		// startup instructions 
 
 {
 
 	FILE *instructions;
+
+	#define spaces  "    "		// Spaces to start a line 
+
 	int c, k;
 	int nline_flag = 0;
 	int first_time_in_flag = 1;
 	int cr = 0;
-	//char spaces[] = "    "; /* Spaces to start a line */
-    #define spaces  "    "
 
 	instructions = fopen("INSTRUCTIONS.TXT", "rt");
 	if (instructions == NULL) {
