@@ -7,8 +7,8 @@ ISSUE1
 
 Universe cords (X,Y)
 
-      (0,0)-----------Y
-        |
+  (0,0)-----------Y
+    |
 	|
 	|
 	|
@@ -93,6 +93,7 @@ int worm_active = 0;				// Flag fro worm hole active during moveea for recursave
 
 void us(void);						// Universe Scan, DEBUG function
 void map(void);						// Map
+void mapk(void);					// Map of Klingon location
 void map_debug(void);				// Debug map
 void lrs(int display_flag);			// Long Range Scan 
 void srs(int no_lines);				// Short Range Scan 
@@ -174,6 +175,9 @@ Create a universe of size (UNIVERSE_SIZE x UNIVERSE_SIZE).
 				universe[ux][uy] = '-';
 		}
 	}
+
+// DEBUG
+//	K_in_universe = 28;
 
 
 
@@ -393,7 +397,11 @@ Main program
 // Map 
 /* map */	else if ((c[0] == 'm') && (c[1] == 'a') && (c[2] == 'p')) {
 			clears();
-			map();
+			if (K_in_universe < 30) {
+				mapk();
+			} else {
+				map();
+			}
 		}
 
 // Save Game 
@@ -990,6 +998,49 @@ void map(void)		// Map
 			// Print map showing SS E, SS & WH
 			if (universe[ux][uy] == '-' || universe[ux][uy] == 'K')
 			//  universe[ux][uy] == 'S' || universe[ux][uy] == 'W')
+				putchar('-');
+			else
+				putchar(universe[ux][uy]);
+		}
+		printf(" %d", ux);
+		putchar('\n');	
+	}
+}
+
+void mapk(void)		// Map of Klingon location
+{
+
+	int i = 0;
+	int first_time_in = 1;
+
+	energy = energy - 4;
+	for (ux = 0; (ux <= UNIVERSE_SIZE - 1); ++ux) {
+		if ( i < SCREEN_ROWS - 2 )
+			printf("%6d ", ux);
+		++i; 
+		for (uy = 0; (uy <= UNIVERSE_SIZE - 1); ++uy) {
+			if (i == (SCREEN_ROWS - 1) && uy == 0) {
+				i = 0;
+				if (first_time_in == 1) {
+					first_time_in = 0;
+					printf("<RETURN> to continue ");
+					getchar();
+					getchar();
+					printf("%6d ", ux);
+					
+				}
+				else {
+					printf("<RETURN> to continue ");
+					getchar();
+					printf("%6d ", ux);
+				}
+			}
+			// Print full map
+			//putchar(universe[ux][uy]);
+
+			// Print map showing SS E, SS & WH
+			if (universe[ux][uy] == '-' || universe[ux][uy] == 'O' ||
+			    universe[ux][uy] == 'S' || universe[ux][uy] == 'W')
 				putchar('-');
 			else
 				putchar(universe[ux][uy]);
@@ -1836,6 +1887,21 @@ void str(void)	// Status report
 	printf("Space Stations in universe: %3d\n\n", SS_in_universe);
 	printf("Saved Quadrants: Q0: K=%2d S=%2d W=%2d   Q1: K=%2d S=%2d W=%2d\n", ssK[0], ssS[0], ssW[0], ssK[1], ssS[1], ssW[1]);
 	printf("                 Q2: K=%2d S=%2d W=%2d   Q3: K=%2d S=%2d W=%2d\n\n", ssK[2], ssS[2], ssW[2], ssK[3], ssS[3], ssW[3]);
+
+	if (K_in_universe < 30) {
+		printf("\n*********************************************************************\n");
+		printf("You have received intelgence from the Federation giving the location\n");
+		printf("of all remaining Klingons in the universe. You can now access this\n");
+		printf("with the 'map' command at any time\n");
+		printf("\n*********************************************************************\n");
+	}
+	else {
+		printf("\n*********************************************************************\n");
+		printf("\n");
+		printf("  AWATING ADDITIONAL COMMUNICATIONS AND INSTRUCTIONS FROM FEDERATION\n");
+		printf("\n");
+		printf("\n*********************************************************************\n");
+	}
 }
 
 
