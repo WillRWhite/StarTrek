@@ -3,7 +3,8 @@ Star Trek Version 1.00 Instructions.
 
 The object off the game is to kill all the Klingons in the 
 universe. The Klingons are represented by the character K, the 
-Enterprise by E, Space Stations by S and Wormholes by W. Your life 
+Enterprise by E, Space Stations by S (unless it has been damaged in
+which case it will be designated by an X) and Wormholes by W. Your life 
 support systems are only available for a given amount of time. If you 
 do not complete your mission within this time the game is over. When 
 the game commences the current star date will be set and the screen will 

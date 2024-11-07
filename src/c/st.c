@@ -1694,7 +1694,8 @@ void moveea(int aex, int aey)	// Move Enterprise absolute
 		else {
 
 			if ( star_date > can_dock_date) {
-				can_dock_date = star_date + MAX_NO_DOCK;	
+				can_dock_date = star_date + MAX_NO_DOCK;
+				clears();
 				printf("\nYou have docked sucesssfully.\n");
 				printf("Your energy and photon torpedoes have been replenished\n");
 				printf("The Federation has granted you permission to view the universe map\n");
@@ -1844,7 +1845,7 @@ void damage(int dlevel)
 /*
 
 DAMAGE1	- You sucessfully kill Klingons.
-	- You move on impulse power.
+	    - You move on impulse power.
 
 DAMAGE2	- You attempt an attack with an unavailable weapon.
 
