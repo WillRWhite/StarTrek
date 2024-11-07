@@ -54,8 +54,9 @@ and Space Stations and also the current status of any saved
 quadrants.
 
 You can dock with a Space Station simply by using impulse power and 
-placing the Enterprise on the same square as the Space Station. All 
-damage will be repaired, and your energy will be returned to maximum. 
+moving the Enterprise on the same square as the Space Station. All 
+damage will be repaired, and your energy will be returned to maximum.
+This is also the only time you are able to use the map command. 
 Before docking it is worth fully energising your phasers and shields 
 but make sure you have enough energy remaining to performing the 
 docking procedure. The amount of time spent docked with the Space 
@@ -88,6 +89,7 @@ the scan extends beyond the universe boundaries.
 
 Map - map
 ---------------------
+The "map" command is only available whern docked.
 The “map” command will show a full map of the universe showing the 
 location of the Enterprise and Space Stations. It will also show the
 universe co-ordinated that have been occupied by the Enterprise designated

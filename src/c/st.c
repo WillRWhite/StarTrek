@@ -77,6 +77,7 @@ int warp_power, warp_dir;			// Warp power & direction
 
 int srs_flag = 1;					// If <= 0 srs not available 
 int lrs_flag = 1;					// If <= 0 lrs not available 
+int map_flag = 0;					// If <= 0 lrs not available 
 int es_flag = 1;					// if <= 0 cannot energise shields 
 int phaser_flag = 1;				// if <= 0 phasers not available 
 int ep_flag = 1;					// if <= 0 cannot energise phasers 
@@ -86,8 +87,9 @@ int impulse_flag = 1;				// if <= 0 Impulse power not available
 int squad_flag = 1;					// if <= 0 save quadrant not availablr 
 int warp_active = 0;				// Need flag for SS collision 
 int worm_active = 0;				// Flag fro worm hole active during moveea for recursave call 
-int lrs_beyond_bounds = 0;			// Test for LRS beyond the bounds of the universe
 
+
+/******************************************* Function prototypes **************************************/
 
 void us(void);						// Universe Scan, DEBUG function
 void map(void);						// Map
@@ -113,6 +115,9 @@ void lines(int lines);				// print lines
 void save_game(void);				// Save game 
 int load_game(void);				// Load game 
 int my_random(int); 				// Emulates assumed behaviour of old Borland Tubro C function
+
+/**************************************** End Function prototypes *************************************/
+
 
 int main()
 {
@@ -251,6 +256,7 @@ Main program
 		}
 
 		if ( energy <= 0 ) {
+			clears();
 			printf(" No energy available - Game over\n");
 			exit(0);
 		}
@@ -497,6 +503,7 @@ void fphaser(int power, int dir)
 			--K_in_sector;
 			shield = shield - K_in_sector;
 			clears();
+			srs(SCREEN_ROWS/4); 
 			printf("\nKlingon destroyed\n\n");
 			damage(1);
 		}
@@ -749,6 +756,7 @@ void fpt(int power, int dir)
 		}
 		else {
 			clears();
+			srs(SCREEN_ROWS/4); 
 			printf("\n%2d Klingons destroyed\n\n", K_killed);
 		}		
 	}
@@ -758,6 +766,8 @@ void impulse(int power, int dir)
 {
 
 	int x, y;
+
+	map_flag = 0;
 
 	if ( power == 0 || dir == 0 ) {
 		clears();
@@ -828,6 +838,8 @@ void warp(int power, int dir)
 
 	int x, y;
 
+	map_flag = 0;
+
 	if ( power != 0 && dir == 0 ) {
 		clears();
 		printf("\nInvalid direction\n\n");
@@ -879,6 +891,7 @@ void warp(int power, int dir)
 			break;
 		}
 	
+		clears();
 		moveea(x,y);
 		srs_noprint();
 
@@ -942,6 +955,12 @@ void map(void)		// Map
 
 	int i = 0;
 	int first_time_in = 1;
+
+	if (map_flag == 0) {
+		clears();
+		printf("Map only unavailable when docked.\n");
+		return;
+	}
 
 	energy = energy - 4;
 	for (ux = 0; (ux <= UNIVERSE_SIZE - 1); ++ux) {
@@ -1101,15 +1120,6 @@ void lrs(int display_flag)	// Long Range Scan
 	lsy_s8_min = lsy_s3_min;
 	lsx_s8_max = lsx_s6_max;
 	lsy_s8_max = lsy_s3_max;
-
-
-// Test for scan beyond the bounds of the universe
-
-if (lsx_s1_min == 0 || lsy_s1_min == 0 || lsx_s1_max == 0 || lsy_s1_max == 0 || lsy_s2_min == 0 || lsx_s4_min == 0 || lsx_s6_min == 0 ||
-    lsy_s2_max == UNIVERSE_SIZE - 1 || lsy_s3_min == UNIVERSE_SIZE - 1 || lsy_s3_max == UNIVERSE_SIZE - 1 || lsx_s4_max == UNIVERSE_SIZE - 1 ||
-	lsx_s6_max == UNIVERSE_SIZE - 1 ){
-	lrs_beyond_bounds = 1;
-	}
 
 /**********************************************************************
 
@@ -1431,11 +1441,14 @@ printf("DEBUG14 lrs\n");
 		printf("\t     |___________|___________|___________|\n");
 		lines(1);
 
-		if (lrs_beyond_bounds == 1){
-			printf("\t     Long range scan beyond universe bounds, data unreliable ");
-			lines(1);
+		// Test for scan beyond the bounds of the universe
+
+		if (lsx_s1_min == 0 || lsy_s1_min == 0 || lsx_s1_max == 0 || lsy_s1_max == 0 || lsy_s2_min == 0 || lsx_s4_min == 0 || lsx_s6_min == 0 ||
+			lsy_s2_max == UNIVERSE_SIZE - 1 || lsy_s3_min == UNIVERSE_SIZE - 1 || lsy_s3_max == UNIVERSE_SIZE - 1 || lsx_s4_max == UNIVERSE_SIZE - 1 ||
+			lsx_s6_max == UNIVERSE_SIZE - 1 ){
+				printf("\t     Long range scan beyond universe bounds, data unreliable ");
+				lines(1);
 		}
-		lrs_beyond_bounds = 0;
 	}
 }
 
@@ -1683,6 +1696,8 @@ void moveea(int aex, int aey)	// Move Enterprise absolute
 			if ( star_date > can_dock_date) {
 				can_dock_date = star_date + MAX_NO_DOCK;	
 				printf("\nYou have docked sucesssfully.\n");
+				printf("Your energy and photon torpedoes have been replenished\n");
+				printf("The Federation has granted you permission to view the universe map\n");
 				star_date = star_date + (max_energy - energy) / 4;
 				star_date = star_date - ((srs_flag + lrs_flag + es_flag + phaser_flag +
 							  ep_flag + pt_flag + warp_flag + impulse_flag - 8 ) * 4);
@@ -1699,6 +1714,7 @@ void moveea(int aex, int aey)	// Move Enterprise absolute
 				pt_flag = 1;
 				warp_flag = 1;
 				impulse_flag = 1;
+				map_flag = 1;
 				
 			}
 			else {
